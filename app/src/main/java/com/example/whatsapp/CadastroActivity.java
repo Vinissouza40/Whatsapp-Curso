@@ -32,8 +32,8 @@ public class CadastroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro);
 
         campoNome = findViewById(R.id.editNome);
-        campoEmail = findViewById(R.id.editEmail);
-        campoSenha = findViewById(R.id.editSenha);
+        campoEmail = findViewById(R.id.editLoginEmail);
+        campoSenha = findViewById(R.id.editLoginSenha);
 
     }
 
@@ -84,10 +84,10 @@ public class CadastroActivity extends AppCompatActivity {
                     cadastrarUsuario(usuario);
 
                 } else {
-                    Toast.makeText(CadastroActivity.this, "Preencha a senha seu merda!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CadastroActivity.this, "Preencha a senha !", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(CadastroActivity.this, "Preencha o Email seu merda!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CadastroActivity.this, "Preencha o Email !", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(CadastroActivity.this, "Preencha o nome!", Toast.LENGTH_SHORT).show();
