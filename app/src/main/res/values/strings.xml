@@ -5,4 +5,6 @@
     <string name="botao_Logar">Logar</string>
     <string name="nao_tem_conta">Nao tem conta? Cadastre-se</string>
     <string name="digite_nome">Digite o seu nome</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
