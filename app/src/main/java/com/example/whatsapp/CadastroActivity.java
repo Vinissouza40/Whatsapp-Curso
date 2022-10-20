@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.whatsapp.config.ConfiguracaoFirebase;
@@ -24,7 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class CadastroActivity extends AppCompatActivity {
 
     private TextInputEditText campoNome, campoEmail, campoSenha;
-    private FirebaseAuth autenticacao ;
+    private Button botaoCadastrar;
+    private FirebaseAuth autenticacao;
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     @Override
@@ -33,12 +35,12 @@ public class CadastroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro);
 
         campoNome = findViewById(R.id.editNome);
-        campoEmail = findViewById(R.id.editLoginEmail);
-        campoSenha = findViewById(R.id.editLoginSenha);
+        campoEmail = findViewById(R.id.editCadastroEmail);
+        campoSenha = findViewById(R.id.editCadastroSenha);
 
     }
 
-    public void cadastrarUsuario( Usuario usuario){
+    public void cadastrarUsuario(Usuario usuario) {
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         autenticacao.createUserWithEmailAndPassword(
@@ -47,7 +49,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                if ( task.isSuccessful() ){
+                if (task.isSuccessful()) {
 
                     Toast.makeText(CadastroActivity.this,
                             "Sucesso ao cadastrar usuário!",
@@ -55,28 +57,28 @@ public class CadastroActivity extends AppCompatActivity {
                     finish();
 
                     try {
-
-                        String identificadorUsuario = Base64Custom.codificarBase64( usuario.getEmail() );
-                        usuario.setId( identificadorUsuario );
+                        String identificadorUsuario = Base64Custom.codificarBase64(usuario.getEmail());
+                        usuario.setId(identificadorUsuario);
                         usuario.salvar();
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                }else {
+
+                } else {
 
                     String excecao = "";
                     try {
                         throw task.getException();
-                    }catch ( FirebaseAuthWeakPasswordException e){
+                    } catch (FirebaseAuthWeakPasswordException e) {
                         excecao = "Digite uma senha mais forte!";
-                    }catch ( FirebaseAuthInvalidCredentialsException e){
-                        excecao= "Por favor, digite um e-mail válido";
-                    }catch ( FirebaseAuthUserCollisionException e){
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        excecao = "Por favor, digite um e-mail válido";
+                    } catch (FirebaseAuthUserCollisionException e) {
                         excecao = "Este conta já foi cadastrada";
-                    }catch (Exception e){
-                        excecao = "Erro ao cadastrar usuário: "  + e.getMessage();
+                    } catch (Exception e) {
+                        excecao = "Erro ao cadastrar usuário: " + e.getMessage();
                         e.printStackTrace();
                     }
 
@@ -100,6 +102,7 @@ public class CadastroActivity extends AppCompatActivity {
         if (!textoNome.isEmpty()) {
             if (!textoEmail.isEmpty()) {
                 if (!textoSenha.isEmpty()) {
+
                     Usuario usuario = new Usuario();
                     usuario.setNome(textoNome);
                     usuario.setEmail(textoEmail);
@@ -108,15 +111,20 @@ public class CadastroActivity extends AppCompatActivity {
                     cadastrarUsuario(usuario);
 
                 } else {
-                    Toast.makeText(CadastroActivity.this, "Preencha a senha !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CadastroActivity.this,
+                            "Preencha a senha!",
+                            Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(CadastroActivity.this, "Preencha o Email !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CadastroActivity.this,
+                        "Preencha o email!",
+                        Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(CadastroActivity.this, "Preencha o nome!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CadastroActivity.this,
+                    "Preencha o nome!",
+                    Toast.LENGTH_SHORT).show();
         }
-
 
     }
 }

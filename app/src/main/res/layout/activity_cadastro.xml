@@ -32,7 +32,8 @@
             android:id="@+id/editNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/digite_nome" />
+            android:hint="@string/digite_nome"
+            android:textColor="#FFFFFF" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -51,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/digite_email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="#FFFFFF" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -70,7 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/digite_senha"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="#FFFFFF" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
