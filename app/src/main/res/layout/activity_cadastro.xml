@@ -83,6 +83,7 @@
         android:backgroundTint="#054D44"
         android:onClick="validarCadastroUsuario"
         android:text="Cadastrar"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout5" />
