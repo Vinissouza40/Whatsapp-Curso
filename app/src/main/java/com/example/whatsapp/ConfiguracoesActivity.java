@@ -15,13 +15,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.whatsapp.config.ConfiguracaoFirebase;
 import com.example.whatsapp.helper.Base64Custom;
 import com.example.whatsapp.helper.Permissao;
 import com.example.whatsapp.helper.UsuarioFirebase;
+import com.example.whatsapp.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,16 +45,15 @@ public class ConfiguracoesActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };
-
     private ImageButton imageButtonCamera, imageButtonGaleria;
-    private static final int SELECAO_CAMERA = 100;
+    private static final int SELECAO_CAMERA  = 100;
     private static final int SELECAO_GALERIA = 200;
-
     private CircleImageView circleImageViewPerfil;
-
+    private EditText editPerfilNome;
     private StorageReference storageReference;
-
     private String identificadorUsuario;
+    private ImageView imageAtualizarNome;
+    private Usuario usuarioLogado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,38 +61,45 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_configuracoes);
 
         storageReference = ConfiguracaoFirebase.getFirebaseStorage();
-
         identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
+        usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado();
+
         Permissao.validarPermissoes(permissoesNecessarias, this, 1);
 
         imageButtonCamera = findViewById(R.id.imageButtonCamera);
         imageButtonGaleria = findViewById(R.id.imageButtonGaleria);
         circleImageViewPerfil = findViewById(R.id.circleImageViewFotoPerfil);
+        editPerfilNome = findViewById(R.id.editPerfilNome);
+        imageAtualizarNome = findViewById(R.id.imageAtulaizarNome);
 
 
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle("Configurações");
-        setSupportActionBar(toolbar);
+        setSupportActionBar( toolbar );
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         FirebaseUser usuario = UsuarioFirebase.getUsuarioAtual();
         Uri url = usuario.getPhotoUrl();
 
-        if( url != null ){
-
-        }else{
+        if ( url != null ){
+            Glide.with(ConfiguracoesActivity.this)
+                    .load( url )
+                    .into( circleImageViewPerfil );
+        }else {
             circleImageViewPerfil.setImageResource(R.drawable.padrao);
         }
 
+        editPerfilNome.setText( usuario.getDisplayName() );
+
         imageButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
 
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(intent, SELECAO_CAMERA);
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if ( i.resolveActivity(getPackageManager()) != null ){
+                    startActivityForResult(i, SELECAO_CAMERA );
                 }
 
 
@@ -98,15 +108,32 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
         imageButtonGaleria.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                if (i.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(i, SELECAO_GALERIA);
+            public void onClick(View v) {
+
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
+                if ( i.resolveActivity(getPackageManager()) != null ){
+                    startActivityForResult(i, SELECAO_GALERIA );
                 }
             }
         });
 
+        imageAtualizarNome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nome = editPerfilNome.getText().toString();
+                boolean retorno = UsuarioFirebase.atualizarNomeUsuario(nome);
+                if (retorno){
+
+                    usuarioLogado.setNome(nome);
+                    usuarioLogado.atualizar();
+
+                    Toast.makeText(ConfiguracoesActivity.this, "Nome Alterado com Sucesso!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -176,6 +203,15 @@ public class ConfiguracoesActivity extends AppCompatActivity {
     }
 
     private void atualizaFotoUsuario(Uri url) {
+       boolean  retorno = UsuarioFirebase.atualizarFotoUsuario(url);
+       if(retorno){
+           usuarioLogado.setFoto(url.toString() );
+           usuarioLogado.atualizar();
+
+           Toast.makeText(ConfiguracoesActivity.this, "Sua foto foi alterada", Toast.LENGTH_SHORT).show();
+
+       }
+
 
     }
 
