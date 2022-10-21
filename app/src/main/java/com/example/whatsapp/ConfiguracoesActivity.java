@@ -22,9 +22,12 @@ import com.example.whatsapp.config.ConfiguracaoFirebase;
 import com.example.whatsapp.helper.Base64Custom;
 import com.example.whatsapp.helper.Permissao;
 import com.example.whatsapp.helper.UsuarioFirebase;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -69,6 +72,15 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        FirebaseUser usuario = UsuarioFirebase.getUsuarioAtual();
+        Uri url = usuario.getPhotoUrl();
+
+        if( url != null ){
+
+        }else{
+            circleImageViewPerfil.setImageResource(R.drawable.padrao);
+        }
 
         imageButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +140,7 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                             .child("imagens")
                             .child("perfil")
                             //.child(identificadorUsuario)
-                            .child(identificadorUsuario  + ".jpeg");
+                            .child(identificadorUsuario + ".jpeg");
 
                     UploadTask uploadTask = imagemRf.putBytes(dadosImagem);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -144,6 +156,16 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                             Toast.makeText(ConfiguracoesActivity.this,
                                     "Sucesso ao fazer upload da imagem",
                                     Toast.LENGTH_SHORT).show();
+
+                            imagemRf.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    Uri url = task.getResult();
+                                    atualizaFotoUsuario(url);
+                                }
+
+
+                            });
                         }
                     });
                 }
@@ -151,6 +173,10 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void atualizaFotoUsuario(Uri url) {
+
     }
 
     @Override
