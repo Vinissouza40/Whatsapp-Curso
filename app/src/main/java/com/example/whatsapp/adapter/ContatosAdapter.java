@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.whatsapp.R;
 import com.example.whatsapp.model.Usuario;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.List;
 
@@ -31,9 +32,9 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View itemLista = LayoutInflater.from(parent.getContext() ).inflate(R.layout.toolbar, parent, false);
+        View itemLista = LayoutInflater.from( parent.getContext() ).inflate(R.layout.adapter_contatos, parent, false);
+        return new MyViewHolder(itemLista);
 
-        return null;
     }
 
     @Override
