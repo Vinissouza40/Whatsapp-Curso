@@ -158,9 +158,9 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
                 if (imagem != null) {
                     circleImageViewPerfil.setImageBitmap(imagem);
+
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     imagem.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-
                     byte[] dadosImagem = baos.toByteArray();
 
                     StorageReference imagemRf = storageReference

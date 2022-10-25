@@ -47,7 +47,7 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Mensagem mensagem = mensagens.get(position);
+        Mensagem mensagem = mensagens.get( position );
         String msg = mensagem.getMensagem();
         String imagem = mensagem.getImagem();
 
@@ -64,6 +64,7 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.MyVi
             //Esconder a imagem
             holder.imagem.setVisibility(View.GONE);
         }
+
 
     }
 
