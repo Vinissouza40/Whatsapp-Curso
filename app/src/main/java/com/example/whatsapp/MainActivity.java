@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import com.example.whatsapp.config.ConfiguracaoFirebase;
 import com.example.whatsapp.fragment.ContatosFragment;
 import com.example.whatsapp.fragment.ConversasFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -22,6 +24,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
+    private MaterialSearchView materialSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +49,35 @@ public class MainActivity extends AppCompatActivity {
         SmartTabLayout viewpagertab = findViewById(R.id.viewpagertab);
         viewpagertab.setViewPager(viewPager);
 
+        materialSearchView = findViewById(R.id.search_view);
+        materialSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("evento", "onQueryTextSubmit");
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ConversasFragment fragment = (ConversasFragment) adapter.getPage(0);
+
+                if(newText != null && !newText.isEmpty()){
+                    fragment.pesquisarConveras(newText);
+                }
+
+                return false;
+            }
+        });
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
+        MenuItem item = menu.findItem(R.id.menuPesquisa);
+        materialSearchView.setMenuItem(item);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -79,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void abrirConfiguracoes(){
-        Intent intent = new Intent(MainActivity.this,ConfiguracoesActivity.class);
+    public void abrirConfiguracoes() {
+        Intent intent = new Intent(MainActivity.this, ConfiguracoesActivity.class);
         startActivity(intent);
     }
 
