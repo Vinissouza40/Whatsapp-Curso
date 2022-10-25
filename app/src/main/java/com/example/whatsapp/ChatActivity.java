@@ -10,6 +10,7 @@ import com.example.whatsapp.adapter.MensagensAdapter;
 import com.example.whatsapp.config.ConfiguracaoFirebase;
 import com.example.whatsapp.helper.Base64Custom;
 import com.example.whatsapp.helper.UsuarioFirebase;
+import com.example.whatsapp.model.Conversa;
 import com.example.whatsapp.model.Mensagem;
 import com.example.whatsapp.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -67,7 +68,7 @@ public class ChatActivity extends AppCompatActivity {
     private MensagensAdapter adapter;
     private List<Mensagem> mensagens = new ArrayList<>();
 
-    private static final int SELECAO_CAMERA  = 100;
+    private static final int SELECAO_CAMERA = 100;
 
 
     @Override
@@ -91,40 +92,40 @@ public class ChatActivity extends AppCompatActivity {
 
 
         Bundle bundle = getIntent().getExtras();
-        if ( bundle !=  null ){
+        if (bundle != null) {
 
             usuarioDestinatario = (Usuario) bundle.getSerializable("chatContato");
-            textViewNome.setText( usuarioDestinatario.getNome() );
+            textViewNome.setText(usuarioDestinatario.getNome());
 
             String foto = usuarioDestinatario.getFoto();
-            if ( foto != null ){
+            if (foto != null) {
                 Uri url = Uri.parse(usuarioDestinatario.getFoto());
                 Glide.with(ChatActivity.this)
                         .load(url)
-                        .into( circleImageViewFoto );
-            }else {
+                        .into(circleImageViewFoto);
+            } else {
                 circleImageViewFoto.setImageResource(R.drawable.padrao);
             }
 
             //recuperar dados usuario destinatario
-            idUsuarioDestinatario = Base64Custom.codificarBase64( usuarioDestinatario.getEmail() );
+            idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getEmail());
 
         }
 
         //Configuração adapter
-        adapter = new MensagensAdapter(mensagens, getApplicationContext() );
+        adapter = new MensagensAdapter(mensagens, getApplicationContext());
 
         //Configuração recyclerview
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerMensagens.setLayoutManager( layoutManager );
-        recyclerMensagens.setHasFixedSize( true );
-        recyclerMensagens.setAdapter( adapter );
+        recyclerMensagens.setLayoutManager(layoutManager);
+        recyclerMensagens.setHasFixedSize(true);
+        recyclerMensagens.setAdapter(adapter);
 
 
         storage = ConfiguracaoFirebase.getFirebaseStorage();
         mensagensRef = database.child("mensagens")
-                .child( idUsuarioRemetente )
-                .child( idUsuarioDestinatario );
+                .child(idUsuarioRemetente)
+                .child(idUsuarioDestinatario);
 
 
         editMensagem.setText("");
@@ -195,6 +196,8 @@ public class ChatActivity extends AppCompatActivity {
                                     salvarMensagem(idUsuarioRemetente, idUsuarioDestinatario, mensagem);
                                     salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
 
+
+
                                     Toast.makeText(ChatActivity.this,
                                             "Sucesso ao enviar imagem",
                                             Toast.LENGTH_SHORT).show();
@@ -223,9 +226,23 @@ public class ChatActivity extends AppCompatActivity {
 
             salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
 
+            salvarConversa(mensagem);
+
         } else {
             Toast.makeText(ChatActivity.this, "Digite uma mensagem para enviar", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void salvarConversa(Mensagem msg) {
+
+        Conversa conversaRemetente = new Conversa();
+        conversaRemetente.setIdRemetente(idUsuarioRemetente);
+        conversaRemetente.setIdDestinatario(idUsuarioDestinatario);
+        conversaRemetente.setUltimaMensagem(msg.getMensagem());
+        conversaRemetente.setUsuarioExibicao(usuarioDestinatario);
+
+        conversaRemetente.salvar();
+
     }
 
     private void salvarMensagem(String idRemetente, String idDestinatario, Mensagem msg) {
