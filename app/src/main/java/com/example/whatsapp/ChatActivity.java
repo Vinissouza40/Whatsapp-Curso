@@ -11,9 +11,14 @@ import com.example.whatsapp.model.Mensagem;
 import com.example.whatsapp.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,10 +43,11 @@ public class ChatActivity extends AppCompatActivity {
     private String idUsuarioRemetente;
     private String idUsuarioDestinatario;
     private DatabaseReference msgDatabase = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mensagensRef;
     private RecyclerView recyclerMensagens;
     private MensagensAdapter adapter;
     private List<Mensagem> mensagens = new ArrayList<>();
-
+    private ChildEventListener childEventListenerMensagens;
 
     @Override
 
@@ -86,6 +92,13 @@ public class ChatActivity extends AppCompatActivity {
         recyclerMensagens.setHasFixedSize(true);
         recyclerMensagens.setAdapter(adapter);
 
+        mensagensRef = msgDatabase.child("mensagens")
+                .child(idUsuarioRemetente)
+                .child(idUsuarioDestinatario);
+
+
+        editMensagem.setText("");
+
     }
 
     public void enviarMensagem(View view) {
@@ -98,6 +111,8 @@ public class ChatActivity extends AppCompatActivity {
             mensagem.setMensagem(textoMensagem);
 
             salvarMensagem(idUsuarioRemetente, idUsuarioDestinatario, mensagem);
+
+            salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
 
         } else {
             Toast.makeText(ChatActivity.this, "Digite uma mensagem para enviar", Toast.LENGTH_LONG).show();
@@ -115,6 +130,49 @@ public class ChatActivity extends AppCompatActivity {
 
 
         editMensagem.setText("");
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recuperarMensagens();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mensagensRef.removeEventListener( childEventListenerMensagens );
+    }
+
+    private void recuperarMensagens(){
+        childEventListenerMensagens = mensagensRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Mensagem mensagem = snapshot.getValue( Mensagem.class );
+                mensagens.add( mensagem );
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 }
