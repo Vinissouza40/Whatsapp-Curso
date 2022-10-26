@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.whatsapp.ChatActivity;
+import com.example.whatsapp.GrupoActivity;
 import com.example.whatsapp.R;
 import com.example.whatsapp.adapter.ContatosAdapter;
 import com.example.whatsapp.helper.RecyclerItemClickListener;
@@ -69,9 +70,18 @@ public class ContatosFragment extends Fragment {
                     public void onItemClick(View view, int position) {
 
                         Usuario usuarioSelecionado = listaContatos.get(position);
-                        Intent i =  new Intent(getActivity(), ChatActivity.class);
-                        i.putExtra("chatContato", usuarioSelecionado);
-                        startActivity(i);
+                        boolean cabecalho = usuarioSelecionado.getEmail().isEmpty();
+
+                        if (cabecalho){
+                            Intent i = new Intent(getActivity(), GrupoActivity.class);
+                            startActivity(i);
+                        }else{
+                            Intent i =  new Intent(getActivity(), ChatActivity.class);
+                            i.putExtra("chatContato", usuarioSelecionado);
+                            startActivity(i);
+                        }
+
+
 
                     }
 
@@ -86,6 +96,12 @@ public class ContatosFragment extends Fragment {
                     }
                 })
         );
+
+        Usuario itemGrupo = new Usuario();
+        itemGrupo.setNome("Novo grupo");
+        itemGrupo.setEmail("");
+
+        listaContatos.add(itemGrupo);
 
         return view;
     }

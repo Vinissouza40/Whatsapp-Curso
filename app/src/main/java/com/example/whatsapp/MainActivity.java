@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     @Override
@@ -123,6 +124,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ConfiguracoesActivity.class);
         startActivity(intent);
     }
-
 
 }
