@@ -38,6 +38,7 @@ public class ConversasFragment extends Fragment {
     private DatabaseReference database;
     private DatabaseReference conversasRef;
     private ChildEventListener childEventListenerConversas;
+
     public ConversasFragment() {
 
     }
@@ -55,9 +56,9 @@ public class ConversasFragment extends Fragment {
 
         //Configurar recyclerview
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewConversas.setLayoutManager( layoutManager );
+        recyclerViewConversas.setLayoutManager(layoutManager);
         recyclerViewConversas.setHasFixedSize(true);
-        recyclerViewConversas.setAdapter( adapter );
+        recyclerViewConversas.setAdapter(adapter);
 
         recyclerViewConversas.addOnItemTouchListener(new RecyclerItemClickListener(
                 getActivity(),
@@ -68,7 +69,7 @@ public class ConversasFragment extends Fragment {
 
                         Conversa conversaSelecionada = listaConversas.get(position);
 
-                        Intent i =  new Intent(getActivity(), ChatActivity.class);
+                        Intent i = new Intent(getActivity(), ChatActivity.class);
                         i.putExtra("chatContato", conversaSelecionada.getUsuarioExibicao());
                         startActivity(i);
                     }
@@ -89,7 +90,7 @@ public class ConversasFragment extends Fragment {
         String identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
         database = FirebaseDatabase.getInstance().getReference();
         conversasRef = database.child("conversas")
-                .child( identificadorUsuario );
+                .child(identificadorUsuario);
 
 
         return view;
@@ -105,22 +106,42 @@ public class ConversasFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        conversasRef.removeEventListener( childEventListenerConversas );
+        conversasRef.removeEventListener(childEventListenerConversas);
     }
 
-    public void pesquisarConveras(String texto){
-        Log.d("pesquisa", texto);
+    public void pesquisarConveras(String texto) {
+        List<Conversa> listaConversasBusca = new ArrayList<>();
+
+        for (Conversa conversa : listaConversas) {
+            String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
+            String ultimaMsg = conversa.getUltimaMensagem().toLowerCase();
+
+            if(nome.contains(texto) || ultimaMsg.contains(texto)){
+
+                listaConversasBusca.add(conversa);
+
+            }
+        }
+        adapter = new ConversasAdapter(listaConversasBusca, getActivity());
+        recyclerViewConversas.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
-    public void recuperarConversas(){
+    public void recarregarConversas(){
+        adapter = new ConversasAdapter(listaConversas, getActivity());
+        recyclerViewConversas.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void recuperarConversas() {
 
         childEventListenerConversas = conversasRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 // Recuperar conversas
-                Conversa conversa = dataSnapshot.getValue( Conversa.class );
-                listaConversas.add( conversa );
+                Conversa conversa = dataSnapshot.getValue(Conversa.class);
+                listaConversas.add(conversa);
                 adapter.notifyDataSetChanged();
 
             }

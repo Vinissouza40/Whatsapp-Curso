@@ -50,10 +50,24 @@ public class MainActivity extends AppCompatActivity {
         viewpagertab.setViewPager(viewPager);
 
         materialSearchView = findViewById(R.id.search_view);
+        materialSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                ConversasFragment fragment = (ConversasFragment) adapter.getPage(0);
+                fragment.recarregarConversas();
+            }
+        });
+
+
         materialSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("evento", "onQueryTextSubmit");
+
                 return false;
             }
 
@@ -61,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 ConversasFragment fragment = (ConversasFragment) adapter.getPage(0);
 
-                if(newText != null && !newText.isEmpty()){
-                    fragment.pesquisarConveras(newText);
+                if (newText != null && !newText.isEmpty()) {
+                    fragment.pesquisarConveras(newText.toLowerCase());
                 }
 
-                return false;
+                return true;
             }
         });
 
