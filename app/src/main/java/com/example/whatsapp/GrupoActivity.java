@@ -38,12 +38,23 @@ public class GrupoActivity extends AppCompatActivity {
     private ValueEventListener valueEventListenerMembros;
     private DatabaseReference usuarioRef;
     private FirebaseUser usuarioAtual;
+    private Toolbar toolbar;
+
+    public void atualizarMebrosToolbar() {
+        int totalSelecionados = listaMembrosSelecionados.size();
+        int total = listaMembros.size() + totalSelecionados;
+
+        toolbar.setSubtitle(totalSelecionados + " de " + total + " selecionados ");
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grupo);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Novo grupo");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -61,7 +72,7 @@ public class GrupoActivity extends AppCompatActivity {
         recyclerMembros = findViewById(R.id.recyclerMembros);
         recyclerMembrosSelecionados = findViewById(R.id.recyclerMembrosSelecionados);
 
-        usuarioRef  = FirebaseDatabase.getInstance().getReference().child("usuarios");
+        usuarioRef = FirebaseDatabase.getInstance().getReference().child("usuarios");
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();
 
         //Configurar adapter
@@ -69,9 +80,9 @@ public class GrupoActivity extends AppCompatActivity {
 
         //Configura recyclerview para os contatos
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerMembros.setLayoutManager( layoutManager );
+        recyclerMembros.setLayoutManager(layoutManager);
         recyclerMembros.setHasFixedSize(true);
-        recyclerMembros.setAdapter( contatosAdapter );
+        recyclerMembros.setAdapter(contatosAdapter);
 
         recyclerMembros.addOnItemTouchListener(
                 new RecyclerItemClickListener(
@@ -81,17 +92,16 @@ public class GrupoActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(View view, int position) {
 
-                                Usuario usuarioSelecionado = listaMembros.get( position );
+                                Usuario usuarioSelecionado = listaMembros.get(position);
 
                                 //Remover usuario selecionada da lista
-                                listaMembros.remove( usuarioSelecionado );
+                                listaMembros.remove(usuarioSelecionado);
                                 contatosAdapter.notifyDataSetChanged();
 
                                 //Adiciona usuario na nova lista de selecionados
-                                listaMembrosSelecionados.add( usuarioSelecionado );
+                                listaMembrosSelecionados.add(usuarioSelecionado);
                                 grupoSelecionadoAdapter.notifyDataSetChanged();
-
-
+                                atualizarMebrosToolbar();
 
                             }
 
@@ -119,7 +129,7 @@ public class GrupoActivity extends AppCompatActivity {
         );
         recyclerMembrosSelecionados.setLayoutManager(layoutManagerHorizontal);
         recyclerMembrosSelecionados.setHasFixedSize(true);
-        recyclerMembrosSelecionados.setAdapter( grupoSelecionadoAdapter );
+        recyclerMembrosSelecionados.setAdapter(grupoSelecionadoAdapter);
 
         recyclerMembrosSelecionados.addOnItemTouchListener(
                 new RecyclerItemClickListener(
@@ -132,14 +142,13 @@ public class GrupoActivity extends AppCompatActivity {
                                 Usuario usuarioSelecionado = listaMembrosSelecionados.get(position);
 
                                 //Remover da listagem de membros selecionados
-                                listaMembrosSelecionados.remove( usuarioSelecionado );
+                                listaMembrosSelecionados.remove(usuarioSelecionado);
                                 grupoSelecionadoAdapter.notifyDataSetChanged();
 
                                 //Adicionar à listagem de membros
-                                listaMembros.add( usuarioSelecionado );
+                                listaMembros.add(usuarioSelecionado);
                                 contatosAdapter.notifyDataSetChanged();
-
-
+                                atualizarMebrosToolbar();
 
                             }
 
@@ -184,6 +193,7 @@ public class GrupoActivity extends AppCompatActivity {
                     }
                 }
                 contatosAdapter.notifyDataSetChanged();
+                atualizarMebrosToolbar();
             }
 
             @Override

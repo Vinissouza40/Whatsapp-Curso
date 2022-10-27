@@ -92,14 +92,18 @@ public class ConversasFragment extends Fragment {
         conversasRef = database.child("conversas")
                 .child(identificadorUsuario);
 
+        recuperarConversas();
+
 
         return view;
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        recuperarConversas();
+
 
     }
 

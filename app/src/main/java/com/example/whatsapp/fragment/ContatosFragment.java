@@ -68,19 +68,18 @@ public class ContatosFragment extends Fragment {
                         recyclerViewListaContatos, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-
+                        limparListaContatos();
                         Usuario usuarioSelecionado = listaContatos.get(position);
                         boolean cabecalho = usuarioSelecionado.getEmail().isEmpty();
 
-                        if (cabecalho){
+                        if (cabecalho) {
                             Intent i = new Intent(getActivity(), GrupoActivity.class);
                             startActivity(i);
-                        }else{
-                            Intent i =  new Intent(getActivity(), ChatActivity.class);
+                        } else {
+                            Intent i = new Intent(getActivity(), ChatActivity.class);
                             i.putExtra("chatContato", usuarioSelecionado);
                             startActivity(i);
                         }
-
 
 
                     }
@@ -97,14 +96,13 @@ public class ContatosFragment extends Fragment {
                 })
         );
 
-        Usuario itemGrupo = new Usuario();
-        itemGrupo.setNome("Novo grupo");
-        itemGrupo.setEmail("");
 
-        listaContatos.add(itemGrupo);
+        adcionarMenuNovoGrupo();
 
         return view;
     }
+
+
 
     @Override
     public void onStart() {
@@ -127,7 +125,7 @@ public class ContatosFragment extends Fragment {
 
                     Usuario usuario = dados.getValue(Usuario.class);
                     String emailUsuarioAtual = usuarioAtual.getEmail();
-                    if (!emailUsuarioAtual.equals(usuario.getEmail())){
+                    if (!emailUsuarioAtual.equals(usuario.getEmail())) {
                         listaContatos.add(usuario);
                     }
                 }
@@ -139,5 +137,19 @@ public class ContatosFragment extends Fragment {
 
             }
         });
+    }
+
+    public void limparListaContatos() {
+        listaContatos.clear();
+        adcionarMenuNovoGrupo();
+    }
+
+    public void adcionarMenuNovoGrupo() {
+        Usuario itemGrupo = new Usuario();
+        itemGrupo.setNome("Novo grupo");
+        itemGrupo.setEmail("");
+        itemGrupo.setSenha("123456");
+
+        listaContatos.add(itemGrupo);
     }
 }
