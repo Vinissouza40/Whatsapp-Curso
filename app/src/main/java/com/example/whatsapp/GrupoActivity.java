@@ -1,5 +1,6 @@
 package com.example.whatsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.whatsapp.adapter.ContatosAdapter;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class GrupoActivity extends AppCompatActivity {
     private DatabaseReference usuarioRef;
     private FirebaseUser usuarioAtual;
     private Toolbar toolbar;
+    private FloatingActionButton fabAvancarCadastro;
 
     public void atualizarMebrosToolbar() {
         int totalSelecionados = listaMembrosSelecionados.size();
@@ -59,18 +62,9 @@ public class GrupoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
         recyclerMembros = findViewById(R.id.recyclerMembros);
         recyclerMembrosSelecionados = findViewById(R.id.recyclerMembrosSelecionados);
+        fabAvancarCadastro = findViewById(R.id.fabAvancarCadastro);
 
         usuarioRef = FirebaseDatabase.getInstance().getReference().child("usuarios");
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();
@@ -164,6 +158,15 @@ public class GrupoActivity extends AppCompatActivity {
                         }
                 )
         );
+
+        fabAvancarCadastro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GrupoActivity.this, CadastroGrupoActivity.class);
+                intent.putExtra("membros", (Serializable) listaMembrosSelecionados);
+                startActivity(intent);
+            }
+        });
 
     }
 
