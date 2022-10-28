@@ -68,7 +68,7 @@ public class ContatosFragment extends Fragment {
                         recyclerViewListaContatos, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        limparListaContatos();
+
                         Usuario usuarioSelecionado = listaContatos.get(position);
                         boolean cabecalho = usuarioSelecionado.getEmail().isEmpty();
 

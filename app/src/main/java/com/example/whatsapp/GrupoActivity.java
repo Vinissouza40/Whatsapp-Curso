@@ -9,7 +9,6 @@ import com.example.whatsapp.helper.RecyclerItemClickListener;
 import com.example.whatsapp.helper.UsuarioFirebase;
 import com.example.whatsapp.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,7 +63,7 @@ public class GrupoActivity extends AppCompatActivity {
 
         recyclerMembros = findViewById(R.id.recyclerMembros);
         recyclerMembrosSelecionados = findViewById(R.id.recyclerMembrosSelecionados);
-        fabAvancarCadastro = findViewById(R.id.fabAvancarCadastro);
+        fabAvancarCadastro = findViewById(R.id.fabAvancar);
 
         usuarioRef = FirebaseDatabase.getInstance().getReference().child("usuarios");
         usuarioAtual = UsuarioFirebase.getUsuarioAtual();

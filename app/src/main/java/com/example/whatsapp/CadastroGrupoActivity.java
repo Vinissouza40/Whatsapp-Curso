@@ -2,12 +2,15 @@ package com.example.whatsapp;
 
 import android.os.Bundle;
 
+import com.example.whatsapp.adapter.GrupoSelecionadoAdapter;
 import com.example.whatsapp.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.widget.TextView;
@@ -18,18 +21,23 @@ import java.util.List;
 public class CadastroGrupoActivity extends AppCompatActivity {
 
     private List<Usuario> listaMembrosSelecionados = new ArrayList<>();
-    private TextView textTotalMembros;
+    private TextView textTotalparticipantes;
+    private GrupoSelecionadoAdapter grupoSelecionadoAdapter;
+    private RecyclerView recyclerMembrosSelecionados;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_grupo);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Novo grupo");
+        toolbar.setSubtitle("Defina o nome");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        textTotalMembros = findViewById(R.id.textTotal);
-
-        FloatingActionButton fab = findViewById(R.id.fabAvancarCadastro);
+        textTotalparticipantes = findViewById(R.id.textTotalParticipantes);
+        recyclerMembrosSelecionados = findViewById(R.id.recycleMembrosGrupo);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,7 +50,18 @@ public class CadastroGrupoActivity extends AppCompatActivity {
             List<Usuario> membros = (List<Usuario>) getIntent().getExtras().getSerializable("membros");
             listaMembrosSelecionados.addAll(membros);
 
-            textTotalMembros.setText("total: " + listaMembrosSelecionados.size());
+            textTotalparticipantes.setText("Participantes: " + listaMembrosSelecionados.size());
         }
+
+        grupoSelecionadoAdapter = new GrupoSelecionadoAdapter(listaMembrosSelecionados, getApplicationContext());
+
+        RecyclerView.LayoutManager layoutManagerHorizontal = new LinearLayoutManager(
+                getApplicationContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+        );
+        recyclerMembrosSelecionados.setLayoutManager(layoutManagerHorizontal);
+        recyclerMembrosSelecionados.setHasFixedSize(true);
+        recyclerMembrosSelecionados.setAdapter(grupoSelecionadoAdapter);
     }
 }
