@@ -70,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
     private List<Mensagem> mensagens = new ArrayList<>();
     private static final int SELECAO_CAMERA = 100;
     private Grupo grupo;
-
+    private Usuario usuarioRemetente;
 
     @Override
 
@@ -90,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerMensagens = findViewById(R.id.recyclerMensagens);
 
         idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
-
+        usuarioRemetente = UsuarioFirebase.getDadosUsuarioLogado();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -246,7 +246,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 salvarConversa(idUsuarioRemetente, idUsuarioDestinatario, usuarioDestinatario, mensagem, false);
 
-                Usuario usuarioRemetente = UsuarioFirebase.getDadosUsuarioLogado();
                 salvarConversa(idUsuarioDestinatario, idUsuarioRemetente, usuarioRemetente, mensagem, false);
             } else {
                 for (Usuario membro : grupo.getMembros()) {
@@ -256,7 +255,7 @@ public class ChatActivity extends AppCompatActivity {
                     Mensagem mensagem = new Mensagem();
                     mensagem.setIdUsuario(idUsuarioLogadoGrupo);
                     mensagem.setMensagem(textoMensagem);
-                    mensagem.setNome(membro.getNome());
+                    mensagem.setNome(usuarioRemetente.getNome());
 
                     salvarMensagem(idRemetenteGrupo, idUsuarioDestinatario, mensagem);
                     salvarConversa(idRemetenteGrupo, idUsuarioDestinatario, usuarioDestinatario, mensagem, true);

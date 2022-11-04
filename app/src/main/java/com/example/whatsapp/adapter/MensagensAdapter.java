@@ -47,28 +47,32 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Mensagem mensagem = mensagens.get( position );
+        Mensagem mensagem = mensagens.get(position);
         String msg = mensagem.getMensagem();
         String imagem = mensagem.getImagem();
 
-        if ( imagem != null ){
-            Uri url = Uri.parse( imagem );
-            Glide.with(context).load(url).into( holder.imagem );
+        if (imagem != null) {
+            Uri url = Uri.parse(imagem);
+            Glide.with(context).load(url).into(holder.imagem);
 
             String nome = mensagem.getNome();
-            if (!nome.isEmpty()){
+            if (!nome.isEmpty()) {
                 holder.nome.setText(nome);
+            } else {
+                holder.nome.setVisibility(View.GONE);
             }
 
             //Esconder o texto
             holder.mensagem.setVisibility(View.GONE);
 
-        }else {
-            holder.mensagem.setText( msg );
+        } else {
+            holder.mensagem.setText(msg);
 
             String nome = mensagem.getNome();
-            if (!nome.isEmpty()){
+            if (!nome.isEmpty()) {
                 holder.nome.setText(nome);
+            } else {
+                holder.nome.setVisibility(View.GONE);
             }
 
             //Esconder a imagem
