@@ -28,11 +28,15 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
         this.context = c;
     }
 
+    public List<Usuario> getContatos() {
+        return this.contatos;
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View itemLista = LayoutInflater.from( parent.getContext() ).inflate(R.layout.adapter_contatos, parent, false);
+        View itemLista = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_contatos, parent, false);
         return new MyViewHolder(itemLista);
 
     }
@@ -44,7 +48,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
         boolean cabecalho = usuario.getEmail().isEmpty();
 
 
-        holder .nome.setText(usuario.getNome());
+        holder.nome.setText(usuario.getNome());
         holder.email.setText(usuario.getEmail());
 
         if (usuario.getFoto() != null) {
@@ -66,21 +70,21 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
         return contatos.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView foto ;
+        CircleImageView foto;
         TextView nome, email;
 
 
-    public MyViewHolder(@NonNull View itemView) {
-        super(itemView);
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-        foto = itemView.findViewById(R.id.imageViewFotoContato);
-        nome = itemView.findViewById(R.id.textNomeContato);
-        email= itemView.findViewById(R.id.textEmailContato);
+            foto = itemView.findViewById(R.id.imageViewFotoContato);
+            nome = itemView.findViewById(R.id.textNomeContato);
+            email = itemView.findViewById(R.id.textEmailContato);
 
+        }
     }
-}
 
 
 }

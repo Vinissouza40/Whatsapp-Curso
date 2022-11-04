@@ -205,14 +205,31 @@ public class ChatActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
                                     Uri url = task.getResult();
-                                    Mensagem mensagem = new Mensagem();
-                                    mensagem.setIdUsuario(idUsuarioRemetente);
-                                    mensagem.setMensagem("imagem.jpeg");
-                                    mensagem.setImagem(url.toString());
+
+                                    if (usuarioDestinatario != null) {
+                                        Mensagem mensagem = new Mensagem();
+                                        mensagem.setIdUsuario(idUsuarioRemetente);
+                                        mensagem.setMensagem("imagem.jpeg");
+                                        mensagem.setImagem(url.toString());
 
 
-                                    salvarMensagem(idUsuarioRemetente, idUsuarioDestinatario, mensagem);
-                                    salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
+                                        salvarMensagem(idUsuarioRemetente, idUsuarioDestinatario, mensagem);
+                                        salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
+                                    } else {
+                                        for (Usuario membro : grupo.getMembros()) {
+                                            String idRemetenteGrupo = Base64Custom.codificarBase64(membro.getEmail());
+                                            String idUsuarioLogadoGrupo = UsuarioFirebase.getIdentificadorUsuario();
+
+                                            Mensagem mensagem = new Mensagem();
+                                            mensagem.setIdUsuario(idUsuarioLogadoGrupo);
+                                            mensagem.setMensagem("imagem.jpeg");
+                                            mensagem.setNome(usuarioRemetente.getNome());
+                                            mensagem.setImagem(url.toString());
+
+                                            salvarMensagem(idRemetenteGrupo, idUsuarioDestinatario, mensagem);
+                                            salvarConversa(idRemetenteGrupo, idUsuarioDestinatario, usuarioDestinatario, mensagem, true);
+                                        }
+                                    }
 
 
                                     Toast.makeText(ChatActivity.this,
@@ -310,6 +327,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void recuperarMensagens() {
+
+        mensagens.clear();
+
         childEventListenerMensagens = mensagensRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
